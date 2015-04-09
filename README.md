@@ -1,2 +1,2 @@
 # study
-just only study used
+used only studies
