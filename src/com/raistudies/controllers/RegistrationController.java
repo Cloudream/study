@@ -17,12 +17,12 @@ import com.raistudies.persistence.UserService;
 import com.raistudies.validator.RegistrationValidator;
 
 @Controller
-@RequestMapping(value="/registration")
+@RequestMapping(value = "/registration")
 public class RegistrationController {
-	
+
 	private RegistrationValidator validator = null;
 	private UserService userService = null;
-		
+
 	@Autowired
 	public void setUserService(UserService userService) {
 		this.userService = userService;
@@ -37,8 +37,8 @@ public class RegistrationController {
 		this.validator = validator;
 	}
 
-	@RequestMapping(method=RequestMethod.GET)
-	public String showForm(ModelMap model){
+	@RequestMapping(method = RequestMethod.GET)
+	public String showForm(ModelMap model) {
 		List<User> users = userService.getAllUser();
 		model.addAttribute("users", users);
 		User user = new User();
@@ -47,11 +47,12 @@ public class RegistrationController {
 		return "registration";
 	}
 
-	@RequestMapping(value="/add", method=RequestMethod.POST)
-	public ModelAndView add(@ModelAttribute(value="user") User user,BindingResult result){
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public ModelAndView add(@ModelAttribute(value = "user") User user,
+			BindingResult result) {
 		validator.validate(user, result);
 		ModelAndView mv = new ModelAndView("registration");
-		if(!result.hasErrors()){
+		if (!result.hasErrors()) {
 			userService.saveUser(user);
 			user = new User();
 			user.setId(UUID.randomUUID().toString());
@@ -60,12 +61,13 @@ public class RegistrationController {
 		mv.addObject("users", userService.getAllUser());
 		return mv;
 	}
-	
-	@RequestMapping(value="/update", method=RequestMethod.POST)
-	public ModelAndView update(@ModelAttribute(value="user") User user,BindingResult result){
+
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public ModelAndView update(@ModelAttribute(value = "user") User user,
+			BindingResult result) {
 		validator.validate(user, result);
 		ModelAndView mv = new ModelAndView("registration");
-		if(!result.hasErrors()){
+		if (!result.hasErrors()) {
 			userService.updateUser(user);
 			user = new User();
 			user.setId(UUID.randomUUID().toString());
@@ -74,12 +76,27 @@ public class RegistrationController {
 		mv.addObject("users", userService.getAllUser());
 		return mv;
 	}
-	
-	@RequestMapping(value="/delete", method=RequestMethod.POST)
-	public ModelAndView delete(@ModelAttribute(value="user") User user,BindingResult result){
+
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public ModelAndView delete(@ModelAttribute(value = "user") User user,
+			BindingResult result) {
 		validator.validate(user, result);
 		ModelAndView mv = new ModelAndView("registration");
-		if(!result.hasErrors()){
+		if (!result.hasErrors()) {
+			userService.deleteUser(user.getId());
+			user = new User();
+			user.setId(UUID.randomUUID().toString());
+			mv.addObject("user", user);
+		}
+		mv.addObject("users", userService.getAllUser());
+		return mv;
+	}
+
+	public ModelAndView principle(@ModelAttribute(value = "user") User user,
+			BindingResult result) {
+		validator.validate(user, result);
+		ModelAndView mv = new ModelAndView("registration");
+		if (!result.hasErrors()) {
 			userService.deleteUser(user.getId());
 			user = new User();
 			user.setId(UUID.randomUUID().toString());
